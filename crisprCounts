@@ -1,0 +1,13 @@
+#!/bin/bash
+#ml R/3.3.3-foss-2016b-fh2
+ml R/3.6.2-foss-2019b-fh1
+btFiles=`ls *.bt`
+for i in $btFiles
+do
+echo "r1<-read.table(pipe(\"cut -f3 $i\"))
+combined<-r1
+tab<-data.frame(table(combined))
+resultsFileName<-gsub(\".bt\",\".counts\",\"$i\")
+write.table(tab,file=resultsFileName,sep=\"\t\",quote=F,row.names=F)">>$i.R
+done
+for i in *.R;do R CMD BATCH $i; done
