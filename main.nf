@@ -16,7 +16,8 @@ params.suffix_list = "gz fq fastq fna fasta"
 
 // Import the modules
 include {
-    mageck
+    mageck as treatment_mageck
+    mageck as control_mageck
 } from './modules' params(
     suffix_list: params.suffix_list
 )
@@ -28,7 +29,8 @@ Usage:
 nextflow run FredHutch/crispr-screen-nf
 
 Required Arguments:
-    --fastq             Path to input FASTQ data
+    --treatment_fastq   Path to FASTQ data for treatment samples
+    --control_fastq     Path to FASTQ data for control samples
                         Multiple files can be specified with wildcards and commas, e.g.
                             /path/to/inputs/A/*.fastq.gz,/path/to/inputs/B/*.fq.gz
     --library           Text file describing sgRNA library
@@ -52,13 +54,27 @@ workflow {
         exit 1
     }
 
-    // If the user did not specify a FASTQ input path
-    if(!params.fastq){
+    // If the user did not specify a FASTQ input path for treatment samples
+    if(!params.treatment_fastq){
 
         // Inform them of the error
         log.info"""
 
-        ERROR: The --fastq flag must be provided to specify input files
+        ERROR: The --treatment_fastq flag must be provided to specify input files for treatment samples
+        Use the --help flag for more details
+
+        """
+        // And exit with an error code
+        exit 1
+    }
+
+    // If the user did not specify a FASTQ input path for control samples
+    if(!params.control_fastq){
+
+        // Inform them of the error
+        log.info"""
+
+        ERROR: The --control_fastq flag must be provided to specify input files for control samples
         Use the --help flag for more details
 
         """
@@ -93,18 +109,29 @@ workflow {
         exit 1
     }
 
-    // Make a channel with the input reads
+    // Make a channel with the input reads for treatment samples
     Channel
-        .fromPath(params.fastq.split(",").toList())
-        .set{reads_ch}
+        .fromPath(params.treatment_fastq.split(",").toList())
+        .set{treatment_reads_ch}
+
+    // Make a channel with the input reads for control samples
+    Channel
+        .fromPath(params.control_fastq.split(",").toList())
+        .set{control_reads_ch}
 
     // Read the sgRNA library file
     Channel
         .fromPath(params.library)
         .set{sgrna_library}
 
-    // Run MAGeCK on the FASTQ files
-    mageck(
-        reads_ch.combine(sgrna_library)
+    // Run MAGeCK on the treatment FASTQ files
+    treatment_mageck(
+        treatment_reads_ch.combine(sgrna_library)
     )
+
+    // Run MAGeCK on the control FASTQ files
+    control_mageck(
+        control_reads_ch.combine(sgrna_library)
+    )
+
 }
