@@ -38,7 +38,7 @@ process mageck {
 
     input:
         file fastq
-        file library
+        each file library
 
     output:
         file "*.count.txt"
@@ -121,7 +121,9 @@ workflow {
         .set{reads_ch}
 
     // Read the sgRNA library file
-    sgrna_library = file(params.library)
+    Channel
+        .fromPath(params.library)
+        .set{sgrna_library}
 
     // Run MAGeCK on the FASTQ files
     mageck(
