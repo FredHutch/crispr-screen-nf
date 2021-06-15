@@ -14,4 +14,9 @@ Required Arguments:
                             As described at https://sourceforge.net/p/mageck/wiki/input/
     --output            Path to output directory
     --output_prefix     Prefix for all output files
+
+Optional Arguments:
+    --ntc_list          Path to file describing negative controls
+                            As described in https://sourceforge.net/p/mageck/wiki/input/#negative-control-sgrna-list
+
 ```
