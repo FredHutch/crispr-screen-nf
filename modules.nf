@@ -35,7 +35,7 @@ mageck count -l ${library} -n \$SAMPLE_NAME --sample-label \$SAMPLE_NAME  --fast
 process mageck_test {
     container "${mageck_container}"
     label "io_limited"
-    publishDir "${params.output}"
+    publishDir "${params.output}", mode: "copy", overwrite: "true"
 
     input:
         tuple file(counts_tsv), file(treatment_samples), file(control_samples)
@@ -63,7 +63,7 @@ ls -lahtr
 process mageck_test_ntc {
     container "${mageck_container}"
     label "io_limited"
-    publishDir "${params.output}"
+    publishDir "${params.output}", mode: "copy", overwrite: "true"
 
     input:
         tuple file(counts_tsv), file(treatment_samples), file(control_samples), file(ntc_list)
