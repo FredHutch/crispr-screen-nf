@@ -51,7 +51,7 @@ set -Eeuo pipefail
 # Parse the name of the sample from the name of the FASTQ file
 SAMPLE_NAME="${fastq.name}"
 for suffix in ${params.suffix_list}; do
-    SAMPLE_NAME=\$(echo \$SAMPLE_NAME | sed "s/.\$\{suffix\}\$//")
+    SAMPLE_NAME=\$(echo \$SAMPLE_NAME | sed "s/.\$suffix\$//")
 done
 
 echo FASTQ file is ${fastq.name}
