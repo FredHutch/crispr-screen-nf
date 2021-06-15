@@ -105,7 +105,6 @@ workflow {
 
     // Run MAGeCK on the FASTQ files
     mageck(
-        reads_ch,
-        sgrna_library
+        reads_ch.combine(sgrna_library)
     )
 }

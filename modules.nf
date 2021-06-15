@@ -5,8 +5,7 @@ process mageck {
     label "mem_medium"
 
     input:
-        file fastq
-        file library
+        tuple file(fastq), file(library)
 
     output:
         file "*.count.txt"
