@@ -7,6 +7,7 @@ nextflow.enable.dsl=2
 params.help = false
 params.fastq = false
 params.library = false
+params.ntc_list = false
 params.output = false
 params.output_prefix = false
 
@@ -21,6 +22,7 @@ include {
     mageck as control_mageck;
     join_counts;
     mageck_test;
+    mageck_test_ntc;
 } from './modules' params(
     suffix_list: params.suffix_list,
     output: params.output,
@@ -42,6 +44,10 @@ Required Arguments:
                             As described at https://sourceforge.net/p/mageck/wiki/input/
     --output            Path to output directory
     --output_prefix     Prefix for all output files
+
+Optional Arguments:
+    --ntc_list          Path to file describing negative controls
+                            As described in https://sourceforge.net/p/mageck/wiki/input/#negative-control-sgrna-list
 
 """
 }
@@ -146,9 +152,24 @@ workflow {
         control_mageck.out.toSortedList(),
     )
 
-    // Run mageck test
-    mageck_test(
-        join_counts.out
-    )
+    // If the user supplied a list of guides used as negative controls
+    if(params.ntc_list){
 
+        // Run mageck test with the control-sgrna option
+        mageck_test_ntc(
+            join_counts.out.combine(
+                Channel
+                    .fromPath(params.ntc_list)
+            )
+        )
+
+    // Otherwise
+    }else{
+
+        // Run mageck test without the control-sgrna option
+        mageck_test(
+            join_counts.out
+        )
+
+    }
 }

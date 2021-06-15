@@ -59,6 +59,36 @@ ls -lahtr
 
 }
 
+// Process used to run MAGeCK test with the --control-sgrna option
+process mageck_test_ntc {
+    container "${mageck_container}"
+    label "io_limited"
+    publishDir "${params.output}"
+
+    input:
+        tuple file(counts_tsv), file(treatment_samples), file(control_samples), file(ntc_list)
+
+    output:
+        file "${params.output_prefix}.*"
+
+    script:
+"""/bin/bash
+
+set -Eeuo pipefail
+
+mageck test \
+    -k ${counts_tsv} \
+    -t "\$(cat ${treatment_samples})" \
+    -c "\$(cat ${control_samples})" \
+    -n "${params.output_prefix}" \
+    --control-sgrna ${ntc_list} \
+    --norm-method control
+
+ls -lahtr
+"""
+
+}
+
 // Process used to join the outputs from mageck / counts
 process join_counts {
     container "quay.io/fhcrc-microbiome/python-pandas:v1.2.1_latest"
