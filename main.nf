@@ -63,6 +63,8 @@ mageck count -l ${library} -n \$SAMPLE_NAME --sample-label \$SAMPLE_NAME  --fast
 }
 
 workflow {
+
+    main:
         
     // If the user used the --help flag
     if(params.help){
