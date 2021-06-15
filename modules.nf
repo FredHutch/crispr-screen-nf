@@ -95,8 +95,8 @@ process join_counts {
     label "io_limited"
 
     input:
-        file "treatment/*"
-        file "control/*"
+        file "treatment/treatment_*.txt"
+        file "control/control_*.txt"
 
     output:
         tuple file("${params.output_prefix}.counts.txt"), file("treatment_sample_names.txt"), file("control_sample_names.txt")
