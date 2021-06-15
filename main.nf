@@ -8,6 +8,7 @@ params.help = false
 params.fastq = false
 params.library = false
 params.output = false
+params.output_prefix = false
 
 // Space delimited list of file endings to be removed from
 // FASTQ file names to yield the samples names that they
@@ -16,10 +17,14 @@ params.suffix_list = "gz fq fastq fna fasta"
 
 // Import the modules
 include {
-    mageck as treatment_mageck
-    mageck as control_mageck
+    mageck as treatment_mageck;
+    mageck as control_mageck;
+    join_counts;
+    mageck_test;
 } from './modules' params(
-    suffix_list: params.suffix_list
+    suffix_list: params.suffix_list,
+    output: params.output,
+    output_prefix: params.output_prefix
 )
 
 // Function which prints help message text
@@ -36,6 +41,7 @@ Required Arguments:
     --library           Text file describing sgRNA library
                             As described at https://sourceforge.net/p/mageck/wiki/input/
     --output            Path to output directory
+    --output_prefix     Prefix for all output files
 
 """
 }
@@ -132,6 +138,17 @@ workflow {
     // Run MAGeCK on the control FASTQ files
     control_mageck(
         control_reads_ch.combine(sgrna_library)
+    )
+
+    // Join together the counts from all samples
+    join_counts(
+        treatment_mageck.out.toSortedList(),
+        control_mageck.out.toSortedList(),
+    )
+
+    // Run mageck test
+    mageck_test(
+        join_counts.out
     )
 
 }
