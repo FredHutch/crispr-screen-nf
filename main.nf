@@ -95,7 +95,7 @@ workflow {
 
     // Make a channel with the input reads
     Channel
-        .fromPath(params.fastq.split(","))
+        .fromPath(params.fastq.split(",").toList())
         .set{reads_ch}
 
     // Read the sgRNA library file
