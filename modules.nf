@@ -6,7 +6,7 @@ process mageck {
 
     input:
         file fastq
-        each file library
+        file library
 
     output:
         file "*.count.txt"
