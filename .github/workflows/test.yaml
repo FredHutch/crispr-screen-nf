@@ -1,0 +1,26 @@
+name: Test CRISPR Screen Workflow
+
+on: [push, pull_request]  
+
+jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    env:
+      NXF_ANSI_LOG: 0
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install Nextflow
+        run: |
+          wget -qO- get.nextflow.io | bash
+          sudo mv nextflow /usr/local/bin/
+      - name: Free disk space
+        run: |
+          sudo swapoff -a
+          sudo rm -f /swapfile
+          sudo apt clean
+          docker rmi $(docker image ls -aq)
+          df -h
+      - name:  Run crispr-screen-nf
+        run: |
+          NXF_VER=21.04.1 nextflow run main.nf -c nextflow.config -profile testing -w work/ -with-docker ubuntu:latest --fastq test_data/*.fastq.gz --library test_data/library.txt --output output
