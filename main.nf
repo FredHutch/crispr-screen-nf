@@ -10,6 +10,7 @@ params.library = false
 params.ntc_list = false
 params.output = false
 params.output_prefix = false
+params.mle_designmat = false
 
 // Space delimited list of file endings to be removed from
 // FASTQ file names to yield the samples names that they
@@ -23,6 +24,7 @@ include {
     join_counts;
     mageck_test;
     mageck_test_ntc;
+    mageck_test_mle;
 } from './modules' params(
     suffix_list: params.suffix_list,
     output: params.output,
@@ -48,6 +50,9 @@ Required Arguments:
 Optional Arguments:
     --ntc_list          Path to file describing negative controls
                             As described in https://sourceforge.net/p/mageck/wiki/input/#negative-control-sgrna-list
+    --mle_designmat     To use MAGeCK-mle to call gene essentiality, use this flag
+                            to specify the path a design matrix file as described in
+                            https://sourceforge.net/p/mageck/wiki/demo/#the-fourth-tutorial-using-mageck-mle-module
 
 """
 }
@@ -171,5 +176,17 @@ workflow {
             join_counts.out
         )
 
+    }
+
+    // If the user specified a design matrix file
+    if(params.mle_designmat){
+
+        // Run MAGeCK-mle
+        mageck_test_mle(
+            join_counts.out.combine(
+                Channel
+                    .fromPath(params.mle_designmat)
+            )
+        )
     }
 }

@@ -89,6 +89,33 @@ ls -lahtr
 
 }
 
+// Process used to run MAGeCK-mle test with the --mle_designmat option
+process mageck_test_mle {
+    container "${mageck_container}"
+    label "io_limited"
+    publishDir "${params.output}/mle/", mode: "copy", overwrite: "true"
+
+    input:
+        tuple file(counts_tsv), file(treatment_samples), file(control_samples), file(designmat)
+
+    output:
+        file "${params.output_prefix}.*"
+
+    script:
+"""/bin/bash
+
+set -Eeuo pipefail
+
+mageck mle \
+    -k ${counts_tsv} \
+    -d ${designmat} \
+    -n "${params.output_prefix}"
+
+ls -lahtr
+"""
+
+}
+
 // Process used to join the outputs from mageck / counts
 process join_counts {
     container "quay.io/fhcrc-microbiome/python-pandas:v1.2.1_latest"

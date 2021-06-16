@@ -21,6 +21,9 @@ jobs:
           sudo apt clean
           docker rmi $(docker image ls -aq)
           df -h
-      - name:  Run crispr-screen-nf
+      - name:  Test MAGeCK
         run: |
           NXF_VER=21.04.1 nextflow run main.nf -c nextflow.config -profile testing -w work/ -with-docker ubuntu:latest --treatment_fastq test_data/test1.fastq.gz --control_fastq test_data/test2.fastq.gz --library test_data/library.txt --output output --output_prefix OUTPUT
+      - name:  Test MAGeCK-mle
+        run: |
+          NXF_VER=21.04.1 nextflow run main.nf -c nextflow.config -profile testing -w work/ -with-docker ubuntu:latest --treatment_fastq test_data/test1.fastq.gz --control_fastq test_data/test2.fastq.gz --library test_data/library.txt --output output --output_prefix OUTPUT_MLE --mle_designmat test_data/designmat.txt
