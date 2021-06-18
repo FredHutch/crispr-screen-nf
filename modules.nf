@@ -131,7 +131,7 @@ process mageck_flute_rra {
         file "*"
 
     script:
-"""/usr/bin/env R
+"""/usr/bin/env R --no-save
 
 # Set up the paths to the input files
 file1 = file.path(
