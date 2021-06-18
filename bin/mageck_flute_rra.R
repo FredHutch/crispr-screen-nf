@@ -23,4 +23,4 @@ organism = args[4]
 scale_cutoff = args[5]
 
 # Run the MAGeCK Flute pipeline for the output of MAGeCK test RRA
-FluteRRA(gene_summary_txt, sgrna_summary_txt, proj=proj, organism=organism, scale_cutoff = as.numeric(scale_cutoff), outdir = getwd())
+FluteRRA(gene_summary_txt, sgrna_summary_txt, proj=proj, organism=organism, scale_cutoff = as.numeric(scale_cutoff), outdir = getwd(), incorporateDepmap = FALSE)
