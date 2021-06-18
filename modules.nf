@@ -1,5 +1,6 @@
 // Container used to run mageck
 mageck_container = "quay.io/biocontainers/mageck:0.5.9.4--py38h8c62d01_1"
+mageckflute_container = "quay.io/biocontainers/bioconductor-mageckflute:1.12.0--r41hdfd78af_0"
 
 // Process used to run MAGeCK count
 process mageck {
@@ -119,7 +120,7 @@ ls -lahtr
 
 // Process used to run MAGeCK FluteRRA
 process mageck_flute_rra {
-    container "${mageck_container}"
+    container "${mageckflute_container}"
     label "io_limited"
     publishDir "${params.output}/rra_flute/", mode: "copy", overwrite: "true"
 
