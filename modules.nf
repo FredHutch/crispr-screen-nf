@@ -131,7 +131,7 @@ process mageck_flute_rra {
         file "*"
 
     script:
-"""/usr/bin/env R --no-save
+"""/usr/bin/env Rscript --no-save
 
 # Set up the paths to the input files
 file1 = file.path(system.file("extdata", package = "MAGeCKFlute"), "${params.output_prefix}.gene_summary.txt")
