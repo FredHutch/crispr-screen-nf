@@ -135,8 +135,8 @@ process mageck_flute_rra {
 
 # Set up the paths to the input files
 file1 = file.path(system.file("extdata", package = "MAGeCKFlute"), "${params.output_prefix}.gene_summary.txt")
-
 file2 = file.path(system.file("extdata", package = "MAGeCKFlute"), "${params.output_prefix}.sgrna_summary.txt")
+dir.create("MAGeCKFlute_Test")
 
 # Run the MAGeCK Flute pipeline for the output of MAGeCK test RRA
 FluteRRA(file1, file2, proj="${params.output_prefix}", organism="${params.organism}", scale_cutoff = ${params.scale_cutoff}, outdir = "./")
