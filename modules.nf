@@ -34,7 +34,7 @@ mageck count -l ${library} -n \$SAMPLE_NAME --sample-label \$SAMPLE_NAME  --fast
 }
 
 // Process used to run MAGeCK test
-process mageck_test {
+process mageck_test_rra {
     container "${mageck_container}"
     label "io_limited"
     publishDir "${params.output}/rra/", mode: "copy", overwrite: "true"
@@ -128,7 +128,7 @@ process mageck_flute_rra {
         file "*"
 
     output:
-        file "*"
+        file "MAGeCKFlute_${params.output}/*"
 
     script:
 """/bin/bash
@@ -141,6 +141,34 @@ mageck_flute_rra.R \
     "${params.output_prefix}" \
     "${params.organism}" \
     "${params.scale_cutoff}"
+    
+"""
+
+}
+
+// Process used to run MAGeCK FluteMLE
+process mageck_flute_mle {
+    container "${mageckflute_container}"
+    label "io_limited"
+    publishDir "${params.output}/mle_flute/", mode: "copy", overwrite: "true"
+
+    input:
+        file "*"
+
+    output:
+        file "MAGeCKFlute_${params.output}/*"
+
+    script:
+"""/bin/bash
+
+set -Eeuo pipefail
+
+mageck_flute_mle.R \
+    "${params.output_prefix}.gene_summary.txt" \
+    "${params.output_prefix}" \
+    "${params.organism}" \
+    "${params.treatname}" \
+    "${params.ctrlname}"
     
 """
 

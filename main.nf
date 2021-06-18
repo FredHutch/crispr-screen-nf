@@ -14,6 +14,8 @@ params.mle_designmat = false
 params.organism = 'hsa'
 params.scale_cutoff = 1
 params.skip_flute = false
+params.treatname = false
+params.ctrlname = false
 
 // Space delimited list of file endings to be removed from
 // FASTQ file names to yield the samples names that they
@@ -25,16 +27,19 @@ include {
     mageck as treatment_mageck;
     mageck as control_mageck;
     join_counts;
-    mageck_test;
+    mageck_test_rra;
     mageck_test_ntc;
     mageck_test_mle;
     mageck_flute_rra;
+    mageck_flute_mle;
 } from './modules' params(
     suffix_list: params.suffix_list,
     output: params.output,
     output_prefix: params.output_prefix,
     organism: params.organism,
     scale_cutoff: params.scale_cutoff,
+    treatname: params.treatname,
+    ctrlname: params.ctrlname,
 )
 
 // Function which prints help message text
@@ -64,6 +69,8 @@ Optional Arguments:
     --skip_flute        MAGeCK-Flute is only compatible with human (hsa) or mouse (mmu) gene symbols.
                         If the guide library contains gene symbols which are not compatible, set this
                         flag to skip the MAGeCK-Flute portion of the analysis.
+    --treatname         Name of treatment group from design matrix (required for FluteMLE)
+    --ctrlname          Name of control group from design matrix (required for FluteMLE)
 
 """
 }
@@ -188,7 +195,7 @@ workflow {
     }else{
 
         // Run mageck test without the control-sgrna option
-        mageck_test(
+        mageck_test_rra(
             join_counts.out
         )
 
@@ -197,7 +204,7 @@ workflow {
 
             // Run MAGeCK-Flute on the output
             mageck_flute_rra(
-                mageck_test.out
+                mageck_test_rra.out
             )
 
         }
@@ -214,5 +221,30 @@ workflow {
                     .fromPath(params.mle_designmat)
             )
         )
+
+        // If the user did not set the --skip_flute flag
+        if(!params.skip_flute){
+
+            // If both --ctrlname and --treatname were provided
+            if(params.ctrlname && params.treatname){
+
+                // Run MAGeCK-Flute on the output
+                mageck_flute_mle(
+                    mageck_test_mle.out
+                )
+
+            }else{
+
+                // Tell the user why MAGeCK-Flute isn't being run
+                log.info"""
+MAGeCK-Flute cannot be run on MLE outputs without specifing
+the treatment and control groups from the design matrix using
+the --ctrlname and --treatname flags.
+
+See nextflow run FredHutch/crispr-screen-nf --help for more details.
+                """
+            }
+
+        }
     }
 }
