@@ -1,4 +1,7 @@
 #!/usr/bin/env Rscript
+
+library(MAGeCKFlute)
+
 args = commandArgs(trailingOnly=TRUE)
 
 # Set up the paths to the input files
