@@ -128,7 +128,7 @@ process mageck_flute_rra {
         file "*"
 
     output:
-        file "MAGeCKFlute_${params.output}/*"
+        file "MAGeCKFlute_${params.output_prefix}/*"
 
     script:
 """/bin/bash
@@ -156,7 +156,7 @@ process mageck_flute_mle {
         file "*"
 
     output:
-        file "MAGeCKFlute_${params.output}/*"
+        file "MAGeCKFlute_${params.output_prefix}/*"
 
     script:
 """/bin/bash
