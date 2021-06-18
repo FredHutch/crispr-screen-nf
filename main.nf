@@ -11,6 +11,8 @@ params.ntc_list = false
 params.output = false
 params.output_prefix = false
 params.mle_designmat = false
+params.organism = 'hsa'
+params.scale_cutoff = 1
 
 // Space delimited list of file endings to be removed from
 // FASTQ file names to yield the samples names that they
@@ -25,10 +27,13 @@ include {
     mageck_test;
     mageck_test_ntc;
     mageck_test_mle;
+    mageck_flute_rra;
 } from './modules' params(
     suffix_list: params.suffix_list,
     output: params.output,
     output_prefix: params.output_prefix
+    organism: params.organism
+    scale_cutoff: params.scale_cutoff
 )
 
 // Function which prints help message text
@@ -53,6 +58,8 @@ Optional Arguments:
     --mle_designmat     To use MAGeCK-mle to call gene essentiality, use this flag
                             to specify the path a design matrix file as described in
                             https://sourceforge.net/p/mageck/wiki/demo/#the-fourth-tutorial-using-mageck-mle-module
+    --organism          Organism string provided for MAGeCK-Flute (default: hsa)
+    --scale_cuttoff     Parameter 'scale_cutoff' for MAGeCK-Flute (default: 1)
 
 """
 }
@@ -168,12 +175,22 @@ workflow {
             )
         )
 
+        // Run MAGeCK-Flute on the output
+        mageck_flute_rra(
+            mageck_test_ntc.out
+        )
+
     // Otherwise
     }else{
 
         // Run mageck test without the control-sgrna option
         mageck_test(
             join_counts.out
+        )
+
+        // Run MAGeCK-Flute on the output
+        mageck_flute_rra(
+            mageck_test.out
         )
 
     }

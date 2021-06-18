@@ -117,6 +117,52 @@ ls -lahtr
 
 }
 
+// Process used to run MAGeCK FluteRRA
+process mageck_flute_rra {
+    container "${mageck_container}"
+    label "io_limited"
+    publishDir "${params.output}/rra_flute/", mode: "copy", overwrite: "true"
+
+    input:
+        file "*"
+
+    output:
+        file "*"
+
+    script:
+"""/usr/bin/env R
+
+# Set up the paths to the input files
+file1 = file.path(
+    system.file(
+        "extdata",
+        package = "MAGeCKFlute"
+    ),
+    "${params.output_prefix}.gene_summary.txt"
+)
+
+file2 = file.path(
+    system.file(
+        "extdata",
+        package = "MAGeCKFlute"
+    ),
+    "${params.output_prefix}.sgrna_summary.txt"
+)
+
+# Run the MAGeCK Flute pipeline for the output of MAGeCK test RRA
+FluteRRA(
+    file1,
+    file2,
+    proj="${params.output_prefix}",
+    organism="${params.organism}",
+    scale_cutoff = ${params.scale_cutoff},
+    outdir = "./"
+)
+
+"""
+
+}
+
 // Process used to join the outputs from mageck / counts
 process join_counts {
     container "quay.io/fhcrc-microbiome/python-pandas:v1.2.1_latest"
