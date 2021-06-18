@@ -131,16 +131,17 @@ process mageck_flute_rra {
         file "*"
 
     script:
-"""/usr/bin/env Rscript --no-save
+"""/bin/bash
 
-# Set up the paths to the input files
-file1 = file.path(system.file("extdata", package = "MAGeCKFlute"), "${params.output_prefix}.gene_summary.txt")
-file2 = file.path(system.file("extdata", package = "MAGeCKFlute"), "${params.output_prefix}.sgrna_summary.txt")
-dir.create("MAGeCKFlute_Test")
+set -Eeuo pipefail
 
-# Run the MAGeCK Flute pipeline for the output of MAGeCK test RRA
-FluteRRA(file1, file2, proj="${params.output_prefix}", organism="${params.organism}", scale_cutoff = ${params.scale_cutoff}, outdir = "./")
-
+mageck_flute_rra.R \
+    "${params.output_prefix}.gene_summary.txt" \
+    "${params.output_prefix}.sgrna_summary.txt" \
+    "${params.output_prefix}" \
+    "${params.organism}" \
+    "${params.scale_cutoff}"
+    
 """
 
 }
