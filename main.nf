@@ -31,9 +31,9 @@ include {
 } from './modules' params(
     suffix_list: params.suffix_list,
     output: params.output,
-    output_prefix: params.output_prefix
-    organism: params.organism
-    scale_cutoff: params.scale_cutoff
+    output_prefix: params.output_prefix,
+    organism: params.organism,
+    scale_cutoff: params.scale_cutoff,
 )
 
 // Function which prints help message text
