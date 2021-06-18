@@ -5,6 +5,7 @@ mageck_container = "quay.io/biocontainers/mageck:0.5.9.4--py38h8c62d01_1"
 process mageck {
     container "${mageck_container}"
     label "mem_medium"
+    publishDir "${params.output}/count/", mode: "copy", overwrite: "true"
 
     input:
         tuple file(fastq), file(library)
@@ -35,7 +36,7 @@ mageck count -l ${library} -n \$SAMPLE_NAME --sample-label \$SAMPLE_NAME  --fast
 process mageck_test {
     container "${mageck_container}"
     label "io_limited"
-    publishDir "${params.output}", mode: "copy", overwrite: "true"
+    publishDir "${params.output}/rra/", mode: "copy", overwrite: "true"
 
     input:
         tuple file(counts_tsv), file(treatment_samples), file(control_samples)
@@ -63,7 +64,7 @@ ls -lahtr
 process mageck_test_ntc {
     container "${mageck_container}"
     label "io_limited"
-    publishDir "${params.output}", mode: "copy", overwrite: "true"
+    publishDir "${params.output}/rra/", mode: "copy", overwrite: "true"
 
     input:
         tuple file(counts_tsv), file(treatment_samples), file(control_samples), file(ntc_list)
