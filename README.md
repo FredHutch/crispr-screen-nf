@@ -18,5 +18,13 @@ Required Arguments:
 Optional Arguments:
     --ntc_list          Path to file describing negative controls
                             As described in https://sourceforge.net/p/mageck/wiki/input/#negative-control-sgrna-list
+    --mle_designmat     To use MAGeCK-mle to call gene essentiality, use this flag
+                            to specify the path a design matrix file as described in
+                            https://sourceforge.net/p/mageck/wiki/demo/#the-fourth-tutorial-using-mageck-mle-module
+    --organism          Organism string provided for MAGeCK-Flute (default: hsa)
+    --scale_cuttoff     Parameter 'scale_cutoff' for MAGeCK-Flute (default: 1)
+    --skip_flute        MAGeCK-Flute is only compatible with human (hsa) or mouse (mmu) gene symbols.
+                        If the guide library contains gene symbols which are not compatible, set this
+                        flag to skip the MAGeCK-Flute portion of the analysis.
 
 ```
