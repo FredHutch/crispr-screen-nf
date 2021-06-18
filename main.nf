@@ -13,6 +13,7 @@ params.output_prefix = false
 params.mle_designmat = false
 params.organism = 'hsa'
 params.scale_cutoff = 1
+params.skip_flute = false
 
 // Space delimited list of file endings to be removed from
 // FASTQ file names to yield the samples names that they
@@ -60,6 +61,9 @@ Optional Arguments:
                             https://sourceforge.net/p/mageck/wiki/demo/#the-fourth-tutorial-using-mageck-mle-module
     --organism          Organism string provided for MAGeCK-Flute (default: hsa)
     --scale_cuttoff     Parameter 'scale_cutoff' for MAGeCK-Flute (default: 1)
+    --skip_flute        MAGeCK-Flute is only compatible with human (hsa) or mouse (mmu) gene symbols.
+                        If the guide library contains gene symbols which are not compatible, set this
+                        flag to skip the MAGeCK-Flute portion of the analysis.
 
 """
 }
@@ -188,10 +192,15 @@ workflow {
             join_counts.out
         )
 
-        // Run MAGeCK-Flute on the output
-        mageck_flute_rra(
-            mageck_test.out
-        )
+        // If the user has not set the --skip_flute flag
+        if(!params.skip_flute){
+
+            // Run MAGeCK-Flute on the output
+            mageck_flute_rra(
+                mageck_test.out
+            )
+
+        }
 
     }
 
