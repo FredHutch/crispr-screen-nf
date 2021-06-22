@@ -3,6 +3,7 @@
 requireNamespace("ggplot2")
 library(MAGeCKFlute)
 library(ggplot2)
+library(gridExtra)
 
 args = commandArgs(trailingOnly=TRUE)
 
