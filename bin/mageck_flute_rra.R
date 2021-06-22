@@ -1,6 +1,8 @@
 #!/usr/bin/env Rscript
 
+requireNamespace("ggplot2")
 library(MAGeCKFlute)
+library(ggplot2)
 
 args = commandArgs(trailingOnly=TRUE)
 
@@ -37,11 +39,9 @@ FluteRRA <- function(gene_summary,
                      width = 12,
                      height = 6,
                      outdir = ".",
-                     type = "KEGG+REACTOME+GOBP+Complex"
-                     ){
+                     type = "KEGG+REACTOME+GOBP+Complex"){
 
   ## Prepare the output environment ##
-  requireNamespace("ggplot2")
   message(Sys.time(), " # Create output dir and pdf file ...")
   outdir = file.path(outdir, paste0("MAGeCKFlute_", proj))
   dir.create(file.path(outdir), showWarnings = FALSE)
