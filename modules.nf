@@ -4,6 +4,7 @@ mageckflute_container = "quay.io/biocontainers/bioconductor-mageckflute:1.12.0--
 
 // Process used to run MAGeCK count
 process mageck {
+    tag "${fastq.name}"
     container "${mageck_container}"
     label "mem_medium"
     publishDir "${params.output}/count/", mode: "copy", overwrite: "true"
@@ -35,6 +36,7 @@ mageck count -l ${library} -n \$SAMPLE_NAME --sample-label \$SAMPLE_NAME  --fast
 
 // Process used to run MAGeCK test
 process mageck_test_rra {
+    tag "${counts_tsv.name}"
     container "${mageck_container}"
     label "io_limited"
     publishDir "${params.output}/rra/", mode: "copy", overwrite: "true"
@@ -63,6 +65,7 @@ ls -lahtr
 
 // Process used to run MAGeCK test with the --control-sgrna option
 process mageck_test_ntc {
+    tag "${counts_tsv.name}"
     container "${mageck_container}"
     label "io_limited"
     publishDir "${params.output}/rra/", mode: "copy", overwrite: "true"
@@ -93,6 +96,8 @@ ls -lahtr
 
 // Process used to run MAGeCK-mle test with the --mle_designmat option
 process mageck_test_mle {
+    tag "${counts_tsv.name}"
+
     container "${mageck_container}"
     label "io_limited"
     publishDir "${params.output}/mle/", mode: "copy", overwrite: "true"
