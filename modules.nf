@@ -77,7 +77,7 @@ mageck test \
     -c "\$(cat ${control_samples})" \
     -n "${params.output_prefix}" \
     --control-sgrna ${ntc_list} \
-    --norm-method control
+    --norm-method total
 
 ls -lahtr
 """
