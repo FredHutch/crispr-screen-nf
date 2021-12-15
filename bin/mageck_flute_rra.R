@@ -25,11 +25,14 @@ organism = args[4]
 # Scale cutoff
 scale_cutoff = args[5]
 
+# incorporateDEPMAP
+incorporateDepmap = args[6] == "TRUE"
+
 FluteRRA <- function(gene_summary,
                      sgrna_summary = NULL,
                      keytype = "Symbol",
                      organism = "hsa",
-                     incorporateDepmap = TRUE,
+                     incorporateDepmap = incorporateDepmap,
                      cell_lines = NA, lineages = "All",
                      omitEssential = TRUE,
                      top = 5, toplabels = NULL,
