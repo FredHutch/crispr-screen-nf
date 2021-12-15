@@ -82,6 +82,8 @@ def validate(params) {
                                     /path/to/inputs/A/*.fastq.gz,/path/to/inputs/B/*.fq.gz
             --library           Text file describing sgRNA library
                                     As described at https://sourceforge.net/p/mageck/wiki/input/
+            --output            Path to output directory
+
             --trim_5_prime      Amount to trim from 5 prime end (default: 32)
             --trim_3_prime      Amount to trim from 3 prime end (default: -8)
             --organism          Organism string provided for MAGeCK-Flute (default: hsa)
@@ -89,22 +91,8 @@ def validate(params) {
             --gmt               Pathway GMT File
             --deepmap_effect    "https://ndownloader.figshare.com/files/20234073" - Effect File Can't Download From Different Region
             --deepmap_samples   "https://ndownloader.figshare.com/files/20274744" - Sample File Can't Download From Different Region
-            --output            Path to output directory
-            
-        Open Questions:
-            - ntc_list          Path to file describing negative controls
+            --ntc_list          Path to file describing negative controls
                                     As described in https://sourceforge.net/p/mageck/wiki/input/#negative-control-sgrna-list
-
-        Design Decisions
-            - treatname & controlname should be standardize for first round of portal development
-            - mle design matrix will be automatically generated and include treatment v control + paired sample where appropriate
-            
-        Todo:
-            - Ingest MSigDB info Into HutchCloud
-            - Dropdown of GMT options
-            - Autogenerate the mle design matrix https://sourceforge.net/p/mageck/wiki/demo/#the-fourth-tutorial-using-mageck-mle-module
-            - If species is not (hsa) or (mle) skip flute
-
         """
     
     exit 1
