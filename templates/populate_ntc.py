@@ -31,7 +31,7 @@ def read_csv(fp, sep=',', required_columns=['sgRNA']):
 counts = read_csv("input.counts.txt", sep='\\t', required_columns=['sgRNA', 'Gene'])
 
 # Library definition file
-library = read_csv("${library}", sep=',', required_columns=['sgRNA', 'Guide'])
+library = read_csv("${library}", sep='\t', required_columns=['sgRNA', 'Guide'])
 
 # Iterate over each of the guides in the library which share a sequence
 for guide_seq, shared_guides in library.groupby('sgRNA'):

@@ -31,8 +31,8 @@ process mageckflute_mle {
 
     input:
         file(gene_summary)
-        file(depmap_effect)
-        file(depmap_samples)
+        file(deepmap_effect)
+        file(deepmap_samples)
         val(prefix)
 
     output:

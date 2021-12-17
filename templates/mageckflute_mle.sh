@@ -5,8 +5,8 @@ mageckflute_mle.R \
     "${gene_summary}" \
     "${params.organism}" \
     "treatment_control" \
-    "depmap" \
-    "${depmap_effect}" \
-    "${depmap_samples}"
+    "deepmap" \
+    "${deepmap_effect}" \
+    "${deepmap_samples}"
     
 ls -lahtr

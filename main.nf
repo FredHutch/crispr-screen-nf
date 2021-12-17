@@ -157,7 +157,7 @@ workflow {
     mageckflute_rra(mageck_rra.out.geneSummary, mageck_rra.out.sgrnaSummary, params.scale_cutoff, params.organism, 'mageckflute/rra')
 
     // Process Mageck Flute MLE
-    mageckflute_mle(mageck_mle.out.geneSummary, Channel.fromPath(params.depmap_effect), Channel.fromPath(params.depmap_samples), 'mageckflute/mle')
+    mageckflute_mle(mageck_mle.out.geneSummary, Channel.fromPath(params.deepmap_effect), Channel.fromPath(params.deepmap_samples), 'mageckflute/mle')
 
     // Export Mageck RRA as JSON via MAGeCKVispr
     mageckvispr_export_rra(
