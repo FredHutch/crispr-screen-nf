@@ -24,10 +24,10 @@ treatname = args[3]
 # Name of control group
 ctrlname = args[4]
 
-# Deepmap Effect
-deepmapEffect = args[5]
+# Depmap Effect
+depmapEffect = args[5]
 
-# Deepmap Samples
+# Depmap Samples
 depmapSamples = args[6]
 
 proj = ""
@@ -41,7 +41,7 @@ IncorporateDepmap <- function(dd, symbol = "id",
   if(file.exists(depmap_rds)){
     Depmap_19Q3 = readRDS(depmap_rds)
   }else{  
-    Depmap_19Q3 = t(read.csv(deepmapEffect, header = TRUE,
+    Depmap_19Q3 = t(read.csv(depmapEffect, header = TRUE,
                              row.names = 1, stringsAsFactors = FALSE, check.names = FALSE))
     rownames(Depmap_19Q3) = gsub(" .*", "", rownames(Depmap_19Q3))
     saveRDS(Depmap_19Q3, depmap_rds)
