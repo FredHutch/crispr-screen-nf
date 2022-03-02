@@ -46,10 +46,11 @@ workflow trim {
 
     main:
 
-    // If the user provided a set of paired adapter sequences
-    if ( params.paired_adapters ){
+    // If the user provided a 5' adapter sequence
+    if ( params.adapter_5_prime ){
 
         // Perform trimming using those paired adapters
+        // Also trim the read length down to params.insert_length
         trim_adapters(fastq_ch, prefix)
 
         // Use the output as that process as the output of the workflow
@@ -58,7 +59,8 @@ workflow trim {
     // If adapter sequences were not found
     } else {
 
-        // Perform trimming using a fixed number of bases from each end
+        // Perform trimming using a fixed number of bases (--trim_5_prime, defaults to 0)
+        // Also trim the read length down to params.insert_length
         trim_fixed(fastq_ch, prefix)
 
         // Use the output as that process as the output of the workflow
