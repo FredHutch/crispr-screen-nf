@@ -65,8 +65,9 @@ def validate(params) {
                                     As described at https://sourceforge.net/p/mageck/wiki/input/
             --output            Path to output directory
 
-            --trim_5_prime      Amount to trim from 5 prime end (default: 32)
-            --trim_3_prime      Amount to trim from 3 prime end (default: -8)
+            --insert_length     Length of sgRNA guides (default: 20)
+            --trim_5_prime      Number of bases to trim from the 5' of each read (default: 0)
+            --adapter_5_prime   (optional) Sequence of 5' adapter to be trimmed from each read
             --organism          Organism string provided for MAGeCK-Flute (default: hsa)
             --scale_cutoff      Parameter 'scale_cutoff' for MAGeCK-Flute (default: 1)
             --gmt               Pathway GMT File
