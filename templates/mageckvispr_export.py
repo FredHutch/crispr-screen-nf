@@ -46,8 +46,11 @@ write(screen.rnas.plot_normalization(), "readcounts")
 write(screen.rnas.plot_readcount_cdf(), "readcount-cdf")
 write(screen.rnas.plot_correlation(), "correlation")
 write(screen.rnas.plot_pca(1, 2), "pca-1-2")
-write(screen.rnas.plot_pca(1, 3), "pca-1-3")
-write(screen.rnas.plot_pca(2, 3), "pca-2-3")
+
+# Only use PC3 if there are more than 2 samples
+if screen.rnas.df.shape[1] > 4:
+    write(screen.rnas.plot_pca(1, 3), "pca-1-3")
+    write(screen.rnas.plot_pca(2, 3), "pca-2-3")
 
 for condition, results in screen.targets.items():
     for selection, results in results.items():
