@@ -13,6 +13,8 @@ for suffix in ${params.suffix_list}; do
 done
 
 cutadapt \
+    -m ${params.min_readlen} \
+    -M ${params.max_readlen} \
     -u "${params.trim_5_prime}" \
     -u "${params.trim_3_prime}" \
     -o \$SAMPLE_NAME".fastq" "${fastq.name}" \
