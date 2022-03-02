@@ -24,9 +24,9 @@ params.container__rmd = "rocker/r-rmd:latest"
 
 // Import the modules
 include {
-    cutadapt_trim as cutadapt_trim_treatment;
-    cutadapt_trim as cutadapt_trim_control;
-} from './module.cutadapt'
+    trim as trim_treatment;
+    trim as trim_control;
+} from './modules/cutadapt'
 
 include {
     mageck_count as mageck_count_treatment;
@@ -127,13 +127,13 @@ workflow {
 
     // Process : Cutadapt Trim
     // Remove Extra Adaptor Sequences From Reads
-    cutadapt_trim_treatment(Channel_Fastq_Treatment, 'cutadapt/trim/treatment')
-    cutadapt_trim_control(Channel_Fastq_Control, 'cutadapt/trim/control')
+    trim_treatment(Channel_Fastq_Treatment, 'cutadapt/trim/treatment')
+    trim_control(Channel_Fastq_Control, 'cutadapt/trim/control')
 
     // Process : Mageck Count
     // Map the raw FASTQ data to reference library file and count the reads for each sgRNA
-    mageck_count_treatment(cutadapt_trim_treatment.out.combine(Channel_Library), 'mageck/count/treatment')
-    mageck_count_control(cutadapt_trim_control.out.combine(Channel_Library), 'mageck/count/control')
+    mageck_count_treatment(trim_treatment.out.combine(Channel_Library), 'mageck/count/treatment')
+    mageck_count_control(trim_control.out.combine(Channel_Library), 'mageck/count/control')
 
     // Process : Mageck Merge
     // Concat All Count Data

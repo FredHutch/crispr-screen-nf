@@ -1,5 +1,5 @@
 // Process : Cutadapt Trim
-process cutadapt_trim {
+process trim_fixed {
     
     container "${params.container__cutadapt}"
     label "mem_medium"
@@ -16,4 +16,19 @@ process cutadapt_trim {
 
     script:
     template "cutadapt_trim.sh"
+}
+
+workflow trim {
+
+    take:
+    fastq_ch
+    prefix
+
+    main:
+
+    trim_fixed(fastq_ch, prefix)
+
+    emit:
+    trim_fixed.out
+
 }
