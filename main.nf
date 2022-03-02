@@ -3,25 +3,6 @@
 // Using DSL-2
 nextflow.enable.dsl=2
 
-// Set default parameters
-params.help = false
-params.scale_cutoff = 1
-params.trim_3_prime = -8
-params.trim_5_prime = 32
-
-// List of extensions to be remove to determine sample name
-params.suffix_list = "trimmed gz fq fastq fna fasta"
-
-// Containers
-params.container__pandas = "quay.io/fhcrc-microbiome/python-pandas:v1.2.1_latest"
-params.container__fastqc = "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1"
-params.container__multiqc = "quay.io/biocontainers/multiqc:1.11--pyhdfd78af_0"
-params.container__cutadapt = "quay.io/biocontainers/cutadapt:3.4--py37h73a75cf_1"
-params.container__mageck = "quay.io/biocontainers/mageck:0.5.9.4--py38h8c62d01_1"
-params.container__mageckflute = "quay.io/biocontainers/bioconductor-mageckflute:1.12.0--r41hdfd78af_0"
-params.container__mageckvispr = "quay.io/biocontainers/mageck-vispr:0.5.6--py_0"
-params.container__rmd = "rocker/r-rmd:latest"
-
 // Import the modules
 include {
     trim as trim_treatment;
