@@ -2,9 +2,9 @@
 
 set -Eeuo pipefail
 
-echo FASTQ file is ${fastq.name}
-echo 5-prime adapter sequence is ${params.adapter_5_prime}
-echo Trimming reads to ${params.insert_length}bp in total length
+echo "FASTQ file is ${fastq.name}"
+echo "5-prime adapter sequence is ${params.adapter_5_prime}"
+echo "Trimming reads to ${params.insert_length}bp in total length"
 
 # Parse the name of the sample from the name of the FASTQ file
 SAMPLE_NAME="${fastq.name}"
