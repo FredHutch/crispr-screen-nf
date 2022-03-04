@@ -25,12 +25,18 @@ expected by this particular workflow is CSV, with the three column headers named
 ## Read Trimming
 
 After generating NGS data from the sgRNA libraries used in this screen, the user
-must specify the number of bases which need to be trimmed from the beginning (5')
-and end (3') of each read in order to yield the exact region of the sgRNA sequence.
-Depending on the read length and library design, these values may vary between
-experiments. The default values are to trim 32bp from the beginning of each read,
-and 8bp from the end. Note that the number of bases trimmed from the end of the
-read is indicated with a negative number (as `-8`).
+must specify the best way to trim adapter sequences away from the sgRNA guides.
+The two options available using this workflow are (a) trimming a fixed number of
+bases from the 5' of each read, and then trimming down to a fixed number of bases,
+or (b) using a known adapter sequence to remove 5' adapters, and then trimming
+down to a fixed number of bases. In either case, the reads which are output by
+the trimming step will all have the same length (which should correspond to the
+length of the sgRNA guides).
+
+To trim a fixed number of bases from the 5' of each read, use the `trim_5_prime`
+parameter. To trim a known 5' adapter sequence, use the `adapter_5_prime` parameter.
+Details on sequence-based 5' adapter trimming can be found
+[here](https://cutadapt.readthedocs.io/en/stable/guide.html#regular-5-adapters).
 
 ## Prerequisites
 
@@ -56,8 +62,9 @@ Required Arguments:
                             As described at https://sourceforge.net/p/mageck/wiki/input/
     --output            Path to output directory
 
-    --trim_5_prime      Amount to trim from 5 prime end (default: 32)
-    --trim_3_prime      Amount to trim from 3 prime end (default: -8)
+    --insert_length     Length of sgRNA guides (default: 20)
+    --trim_5_prime      Number of bases to trim from the 5' of each read (default: 0)
+    --adapter_5_prime   (optional) Sequence of 5' adapter to be trimmed from each read
     --organism          Organism string provided for MAGeCK-Flute (default: hsa)
     --scale_cutoff      Parameter 'scale_cutoff' for MAGeCK-Flute (default: 1)
     --gmt               Pathway GMT File

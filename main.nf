@@ -3,30 +3,11 @@
 // Using DSL-2
 nextflow.enable.dsl=2
 
-// Set default parameters
-params.help = false
-params.scale_cutoff = 1
-params.trim_3_prime = -8
-params.trim_5_prime = 32
-
-// List of extensions to be remove to determine sample name
-params.suffix_list = "trimmed gz fq fastq fna fasta"
-
-// Containers
-params.container__pandas = "quay.io/fhcrc-microbiome/python-pandas:v1.2.1_latest"
-params.container__fastqc = "quay.io/biocontainers/fastqc:0.11.9--hdfd78af_1"
-params.container__multiqc = "quay.io/biocontainers/multiqc:1.11--pyhdfd78af_0"
-params.container__cutadapt = "quay.io/biocontainers/cutadapt:3.4--py37h73a75cf_1"
-params.container__mageck = "quay.io/biocontainers/mageck:0.5.9.4--py38h8c62d01_1"
-params.container__mageckflute = "quay.io/biocontainers/bioconductor-mageckflute:1.12.0--r41hdfd78af_0"
-params.container__mageckvispr = "quay.io/biocontainers/mageck-vispr:0.5.6--py_0"
-params.container__rmd = "rocker/r-rmd:latest"
-
 // Import the modules
 include {
-    cutadapt_trim as cutadapt_trim_treatment;
-    cutadapt_trim as cutadapt_trim_control;
-} from './module.cutadapt'
+    trim as trim_treatment;
+    trim as trim_control;
+} from './modules/cutadapt'
 
 include {
     mageck_count as mageck_count_treatment;
@@ -84,8 +65,9 @@ def validate(params) {
                                     As described at https://sourceforge.net/p/mageck/wiki/input/
             --output            Path to output directory
 
-            --trim_5_prime      Amount to trim from 5 prime end (default: 32)
-            --trim_3_prime      Amount to trim from 3 prime end (default: -8)
+            --insert_length     Length of sgRNA guides (default: 20)
+            --trim_5_prime      Number of bases to trim from the 5' of each read (default: 0)
+            --adapter_5_prime   (optional) Sequence of 5' adapter to be trimmed from each read
             --organism          Organism string provided for MAGeCK-Flute (default: hsa)
             --scale_cutoff      Parameter 'scale_cutoff' for MAGeCK-Flute (default: 1)
             --gmt               Pathway GMT File
@@ -127,13 +109,13 @@ workflow {
 
     // Process : Cutadapt Trim
     // Remove Extra Adaptor Sequences From Reads
-    cutadapt_trim_treatment(Channel_Fastq_Treatment, 'cutadapt/trim/treatment')
-    cutadapt_trim_control(Channel_Fastq_Control, 'cutadapt/trim/control')
+    trim_treatment(Channel_Fastq_Treatment, 'cutadapt/trim/treatment')
+    trim_control(Channel_Fastq_Control, 'cutadapt/trim/control')
 
     // Process : Mageck Count
     // Map the raw FASTQ data to reference library file and count the reads for each sgRNA
-    mageck_count_treatment(cutadapt_trim_treatment.out.combine(Channel_Library), 'mageck/count/treatment')
-    mageck_count_control(cutadapt_trim_control.out.combine(Channel_Library), 'mageck/count/control')
+    mageck_count_treatment(trim_treatment.out.combine(Channel_Library), 'mageck/count/treatment')
+    mageck_count_control(trim_control.out.combine(Channel_Library), 'mageck/count/control')
 
     // Process : Mageck Merge
     // Concat All Count Data
