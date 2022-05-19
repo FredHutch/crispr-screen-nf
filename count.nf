@@ -20,9 +20,6 @@ def validate(params) {
 
     if (params.fastq
         && params.library
-        && params.organism 
-        && params.scale_cutoff 
-        && params.gmt 
         && params.output)
         { return; }
     
