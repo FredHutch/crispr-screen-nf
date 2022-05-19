@@ -40,6 +40,25 @@ process mageck_merge {
     template "mageck_merge.py"
 }
 
+// Process : Mageck Merge Single
+process mageck_merge_single {
+
+    container "quay.io/fhcrc-microbiome/python-pandas:v1.2.1_latest"
+    label "io_limited"
+
+    publishDir "${params.output}/${prefix}/", mode: "copy", overwrite: "true", pattern: "*.txt"
+
+    input:
+        file "counts/*.txt"
+        val(prefix)
+
+    output:
+        tuple file("counts.txt"), file("sample_names.txt"), emit: merged
+
+    script:
+    template "mageck_merge_single.py"
+}
+
 // Process : MAGeCK RRA
 process mageck_rra {
 

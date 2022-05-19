@@ -6,7 +6,7 @@ nextflow.enable.dsl=2
 // Import the modules
 include { trim } from './modules/cutadapt'
 
-include { mageck_count } from './module.mageck'
+include { mageck_count; mageck_merge_single } from './module.mageck'
 
 include {
     populate_ntc;
@@ -74,5 +74,9 @@ workflow {
     // Process : Mageck Count
     // Map the raw FASTQ data to reference library file and count the reads for each sgRNA
     mageck_count(trim.out.combine(Channel_Library), 'mageck/count')
+
+    // Process : Mageck Merge
+    // Concat All Count Data
+    mageck_merge_single(mageck_count.out.counts.toSortedList(), 'mageck/count/combined')
 
 }
