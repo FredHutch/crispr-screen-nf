@@ -35,6 +35,7 @@ process mageck_merge {
 
     output:
         tuple file("counts.txt"), file("treatment_sample_names.txt"), file("control_sample_names.txt"), emit: merged
+        path "summary.txt"
 
     script:
     template "mageck_merge.py"
@@ -54,6 +55,7 @@ process mageck_merge_single {
 
     output:
         tuple file("counts.txt"), file("sample_names.txt"), emit: merged
+        path "summary.txt"
 
     script:
     template "mageck_merge_single.py"

@@ -44,3 +44,26 @@ count_data.to_csv(
     f"counts.txt",
     sep="\t"
 )
+
+# Make a summary table
+summary_data = pd.DataFrame([
+    dict(
+        sample=sample,
+        n_guides=sample_counts.shape[0],
+        n_detected=(sample_counts > 0).sum(),
+        n_undetected=(sample_counts == 0).sum(),
+        n_reads=sample_counts.sum(),
+        mean_depth=sample_counts.mean(),
+        median_depth=sample_counts.median(),
+        n_ten_reads=(sample_counts >= 10).sum(),
+        n_hundred_reads=(sample_counts >= 100).sum()
+    )
+    for sample, sample_counts in count_data.items()
+])
+
+# Write out the summary table to a file
+summary_data.to_csv(
+    "summary.txt",
+    sep="\t",
+    index=None
+)
