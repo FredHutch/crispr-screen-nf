@@ -36,8 +36,6 @@ def validate(params) {
             --insert_length     Length of sgRNA guides (default: 20)
             --trim_5_prime      Number of bases to trim from the 5' of each read (default: 0)
             --adapter_5_prime   (optional) Sequence of 5' adapter to be trimmed from each read
-            --ntc_list          Path to file describing negative controls
-                                    As described in https://sourceforge.net/p/mageck/wiki/input/#negative-control-sgrna-list
         """
     
     exit 1

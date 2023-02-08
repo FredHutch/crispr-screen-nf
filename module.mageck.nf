@@ -86,6 +86,32 @@ process mageck_rra {
 
 }
 
+// Process : MAGeCK RRA with NTC normalization
+process mageck_rra_ntc {
+
+    container "${params.container__mageck}"
+    label "mem_medium"
+    
+    publishDir "${params.output}/${prefix}/", mode: "copy", overwrite: "true", pattern: "*.txt"
+    publishDir "${params.output}/${prefix}/log/", mode: "copy", overwrite: "true", pattern: "*.log"
+
+    input:
+        tuple file(counts_tsv), file(treatment_samples), file(control_samples)
+        val(output_prefix)
+        val(prefix)
+        file(control_sgrna)
+
+    output:
+        tuple file("*.R"), file("*"), emit: r
+        path "${output_prefix}.gene_summary.txt", emit: geneSummary
+        path "${output_prefix}.sgrna_summary.txt", emit: sgrnaSummary
+        path "${output_prefix}.normalized.txt", emit: normCounts
+        
+    script:
+    template "mageck_rra_ntc.sh"
+
+}
+
 // Process : MAGeCK MLE
 process mageck_mle {
 
@@ -108,6 +134,32 @@ process mageck_mle {
 
     script:
     template "mageck_mle.sh"
+
+}
+
+// Process : MAGeCK MLE using NTC normalization
+process mageck_mle_ntc {
+
+    container "${params.container__mageck}"
+    label "mem_medium" 
+
+    publishDir "${params.output}/${prefix}/", mode: "copy", overwrite: "true", pattern: "*.txt"
+    publishDir "${params.output}/${prefix}/log", mode: "copy", overwrite: "true", pattern: "*.log"
+
+    input:
+        tuple file(counts_tsv), file(sample_names), file(control_names)
+        val(treatment)
+        val(control)
+        val(output_prefix)
+        val(prefix)
+        file(control_sgrna)
+
+    output:
+        path "${output_prefix}.gene_summary.txt", emit: geneSummary
+        path "${output_prefix}.sgrna_summary.txt", emit: sgrnaSummary
+
+    script:
+    template "mageck_mle_ntc.sh"
 
 }
 

@@ -70,6 +70,4 @@ Required Arguments:
     --gmt               Pathway GMT File
     --depmap_effect    "https://ndownloader.figshare.com/files/20234073" - Effect File Can't Download From Different Region
     --depmap_samples   "https://ndownloader.figshare.com/files/20274744" - Sample File Can't Download From Different Region
-    --ntc_list          Path to file describing negative controls
-                            As described in https://sourceforge.net/p/mageck/wiki/input/#negative-control-sgrna-list
 ```

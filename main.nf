@@ -13,7 +13,9 @@ include {
     mageck_count as mageck_count_treatment;
     mageck_count as mageck_count_control;
     mageck_rra;
+    mageck_rra_ntc;
     mageck_mle;
+    mageck_mle_ntc;
     mageck_pathway;
     mageck_merge;
 } from './module.mageck'
@@ -73,8 +75,6 @@ def validate(params) {
             --gmt               Pathway GMT File
             --depmap_effect    "https://ndownloader.figshare.com/files/20234073" - Effect File Can't Download From Different Region
             --depmap_samples   "https://ndownloader.figshare.com/files/20274744" - Sample File Can't Download From Different Region
-            --ntc_list          Path to file describing negative controls
-                                    As described in https://sourceforge.net/p/mageck/wiki/input/#negative-control-sgrna-list
         """
     
     exit 1
@@ -123,35 +123,57 @@ workflow {
 
     // Add back counts for duplicated guides (if any)
     populate_ntc(mageck_merge.out.merged.combine(Channel_Library))
-    
-    // Process : Mageck Rra
-    // MAGeCK RRA (identifying CRISPR screen hits by calculating the RRA enrichment score to indicate the essentiality of a gene)
-    mageck_rra(populate_ntc.out, 'rra', 'mageck/rra')
 
-    // Process : Mageck MLE
-    // MAGeCK MLE (identifying CRISPR screen hits by calculating a ‘beta score’ for each targeted gene to measure the degree of selection after the target is perturbed)
-    mageck_mle(populate_ntc.out, params.treatment_fastq, params.control_fastq, 'mle', 'mageck/mle')
+    // If the user selected the flag for NTC-based normalization
+    if ( params.use_control_normalization ){
+
+        // Chanel : Control sgRNA list (NTCs)
+        Channel.fromPath(params.control_sgrna).set{Channel_Control_Sgrna}
+
+        // Process : Mageck Rra
+        // MAGeCK RRA (identifying CRISPR screen hits by calculating the RRA enrichment score to indicate the essentiality of a gene)
+        mageck_rra_ntc(populate_ntc.out, 'rra', 'mageck/rra', Channel_Control_Sgrna)
+        mageck_rra_out = mageck_rra_ntc.out
+
+        // Process : Mageck MLE
+        // MAGeCK MLE (identifying CRISPR screen hits by calculating a ‘beta score’ for each targeted gene to measure the degree of selection after the target is perturbed)
+        mageck_mle_ntc(populate_ntc.out, params.treatment_fastq, params.control_fastq, 'mle', 'mageck/mle', Channel_Control_Sgrna)
+        mageck_mle_out = mageck_mle_ntc.out
+
+    } else {
+
+        // Process : Mageck Rra
+        // MAGeCK RRA (identifying CRISPR screen hits by calculating the RRA enrichment score to indicate the essentiality of a gene)
+        mageck_rra(populate_ntc.out, 'rra', 'mageck/rra')
+        mageck_rra_out = mageck_rra.out
+
+        // Process : Mageck MLE
+        // MAGeCK MLE (identifying CRISPR screen hits by calculating a ‘beta score’ for each targeted gene to measure the degree of selection after the target is perturbed)
+        mageck_mle(populate_ntc.out, params.treatment_fastq, params.control_fastq, 'mle', 'mageck/mle')
+        mageck_mle_out = mageck_mle.out
+
+    }
 
     // Process : Mageck Pathway
-    mageck_pathway(mageck_rra.out.geneSummary.combine(Channel.fromPath(params.gmt)), 'gene', 'mageck/rra/pathway')
+    mageck_pathway(mageck_rra_out.geneSummary.combine(Channel.fromPath(params.gmt)), 'gene', 'mageck/rra/pathway')
     
     // Run Mageck Flute RRA
-    mageckflute_rra(mageck_rra.out.geneSummary, mageck_rra.out.sgrnaSummary, params.scale_cutoff, params.organism, 'mageckflute/rra')
+    mageckflute_rra(mageck_rra_out.geneSummary, mageck_rra_out.sgrnaSummary, params.scale_cutoff, params.organism, 'mageckflute/rra')
 
     // Process Mageck Flute MLE
-    mageckflute_mle(mageck_mle.out.geneSummary, Channel.fromPath(params.depmap_effect), Channel.fromPath(params.depmap_samples), 'mageckflute/mle')
+    mageckflute_mle(mageck_mle_out.geneSummary, Channel.fromPath(params.depmap_effect), Channel.fromPath(params.depmap_samples), 'mageckflute/mle')
 
     // Export Mageck RRA as JSON via MAGeCKVispr
     mageckvispr_export_rra(
-        mageck_rra.out.geneSummary,
-        mageck_rra.out.normCounts,
+        mageck_rra_out.geneSummary,
+        mageck_rra_out.normCounts,
         "mageck/rra/vispr"
     )
 
     // Export Mageck RRA as JSON via MAGeCKVispr
     mageckvispr_export_mle(
-        mageck_mle.out.geneSummary,
-        mageck_rra.out.normCounts,
+        mageck_mle_out.geneSummary,
+        mageck_rra_out.normCounts,
         "mageck/mle/vispr"
     )
     
