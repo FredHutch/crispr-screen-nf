@@ -84,19 +84,23 @@ counts = counts.astype(
 # Sort by gene and guide
 counts = counts.sort_values(by=['Gene', 'sgRNA'])
 
+# Index the counts table on the unique guide ID
+counts = counts.set_index('sgRNA')
+
 # Remove any guides which had 0 counts across all samples
-zero_counts = counts.drop(
-    columns=['Gene', 'sgRNA']
+total_counts = counts.drop(
+    columns=['Gene']
 ).sum(
     axis=1
-).apply(
-    lambda x: x == 0
 )
-if zero_counts.any():
-    print(f"Removing {zero_counts.sum():,} guides with 0 counts")
+
+if (total_counts == 0).any():
+    zero_count_guides = total_counts.loc[total_counts == 0].index.values
+    print(f"Removing {zero_count_guides.shape[0]:,} guides with 0 counts")
+
     counts = counts.drop(
-        index=counts.index.values[zero_counts]
+        index=zero_count_guides
     )
 
 # Write out the counts table
-counts.to_csv('counts.txt', sep='\t', index=None)
+counts.to_csv('counts.txt', sep='\t')
