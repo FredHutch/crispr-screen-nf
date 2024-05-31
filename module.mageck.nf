@@ -5,6 +5,7 @@ process mageck_count {
     label "mem_medium"
 
     publishDir "${params.output}/${prefix}/", mode: "copy", overwrite: "true", pattern: "*.txt"
+    publishDir "${params.output}/${prefix}/", mode: "copy", overwrite: "true", pattern: "*countsummary*"
     publishDir "${params.output}/${prefix}/log/", mode: "copy", overwrite: "true", pattern: "*.log"
 
     input:
